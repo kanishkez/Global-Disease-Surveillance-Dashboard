@@ -11,10 +11,10 @@ interface LeafletMapProps {
 }
 
 const severityColors: Record<string, string> = {
-  critical: '#ef4444',
-  high: '#f97316',
-  medium: '#eab308',
-  low: '#22c55e',
+  critical: '#ff1744',
+  high: '#ff6d00',
+  medium: '#ffea00',
+  low: '#00e676',
 };
 
 export default function LeafletMap({ data, height = '500px', onCountryClick }: LeafletMapProps) {
@@ -45,9 +45,9 @@ export default function LeafletMap({ data, height = '500px', onCountryClick }: L
               pathOptions={{
                 color: color,
                 fillColor: color,
-                fillOpacity: 0.35,
+                fillOpacity: 0.6,
                 weight: 2,
-                opacity: 0.8,
+                opacity: 1,
               }}
               eventHandlers={{
                 click: () => onCountryClick?.(point.country_name),

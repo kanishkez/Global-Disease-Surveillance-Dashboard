@@ -91,18 +91,18 @@ export default function DiseasesContent() {
       {/* Header & Search */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[color:var(--text-primary)] flex items-center gap-2">
             <Activity className="w-6 h-6 text-blue-500" />
             Disease Intelligence
           </h1>
-          <p className="text-dark-400 text-sm mt-1">
+          <p className="text-sm mt-1 text-[color:var(--text-muted)]">
             Search and analyze disease surveillance data
           </p>
         </div>
         <form onSubmit={handleSearchSubmit} className="w-full sm:w-80">
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--text-muted)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -119,7 +119,12 @@ export default function DiseasesContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search diseases (e.g., flu, covid, malaria)..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-white/5 border border-white/10 text-white placeholder-dark-400 outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20 transition-all border"
+              style={{
+                background: "var(--bg-card)",
+                borderColor: "var(--border-subtle)",
+                color: "var(--text-primary)",
+              }}
             />
           </div>
         </form>
@@ -128,7 +133,7 @@ export default function DiseasesContent() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Disease List */}
         <div className="lg:col-span-1">
-          <h2 className="text-sm font-semibold text-dark-400 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wider mb-3 text-[color:var(--text-muted)]">
             Tracked Diseases
           </h2>
           <div className="space-y-1 max-h-[600px] overflow-y-auto pr-1">
@@ -137,7 +142,7 @@ export default function DiseasesContent() {
                 <div key={i} className="shimmer h-12 rounded-lg" />
               ))
             ) : diseases.length === 0 ? (
-              <p className="text-dark-400 text-sm py-4 text-center">
+              <p className="text-sm py-4 text-center text-[color:var(--text-muted)]">
                 No diseases found
               </p>
             ) : (
@@ -148,13 +153,18 @@ export default function DiseasesContent() {
                   className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200
                     ${
                       selectedDisease === disease.name
-                        ? "bg-primary-600/20 border border-primary-500/30 text-white"
-                        : "text-dark-300 hover:bg-white/5 hover:text-white border border-transparent"
+                        ? "bg-primary-600/20 border border-primary-500/30 text-[color:var(--text-primary)]"
+                        : "border border-transparent hover:bg-black/5 dark:hover:bg-white/5"
                     }`}
+                  style={
+                    selectedDisease === disease.name
+                      ? undefined
+                      : { color: "var(--text-secondary)" }
+                  }
                 >
                   <span className="font-medium">{disease.name}</span>
                   {disease.category && (
-                    <span className="block text-[11px] text-dark-500 mt-0.5">
+                    <span className="block text-[11px] mt-0.5 text-[color:var(--text-muted)]">
                       {disease.category}
                     </span>
                   )}
@@ -169,10 +179,10 @@ export default function DiseasesContent() {
           {selectedDisease ? (
             <>
               <div className="glass-card p-5">
-                <h2 className="text-xl font-bold text-white mb-1">
+                <h2 className="text-xl font-bold mb-1 text-[color:var(--text-primary)]">
                   {selectedDisease}
                 </h2>
-                <p className="text-dark-400 text-sm">
+                <p className="text-sm text-[color:var(--text-muted)]">
                   {diseases.find((d) => d.name === selectedDisease)
                     ?.description || "Disease surveillance data"}
                 </p>
@@ -181,7 +191,7 @@ export default function DiseasesContent() {
               {/* Predictions Chart */}
               {predictions.length > 0 && (
                 <div className="glass-card p-5">
-                  <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold mb-4 flex items-center gap-2 text-[color:var(--text-primary)]">
                     <TrendingUp className="w-4 h-4 text-blue-500" />
                     7-Day Case Prediction
                   </h3>
@@ -219,7 +229,7 @@ export default function DiseasesContent() {
                     ]}
                     height={280}
                   />
-                  <div className="flex items-center gap-4 mt-3 text-[11px] text-dark-500">
+                  <div className="flex items-center gap-4 mt-3 text-[11px] text-[color:var(--text-muted)]">
                     <span>
                       Model:{" "}
                       {predictions[0]?.model_type?.toUpperCase() || "LSTM"}
@@ -236,7 +246,7 @@ export default function DiseasesContent() {
 
               {/* Outbreaks */}
               <div>
-                <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-[color:var(--text-primary)]">
                   <AlertTriangle className="w-4 h-4 text-red-500" />
                   Outbreak Reports ({outbreaks.length})
                 </h3>
@@ -246,10 +256,10 @@ export default function DiseasesContent() {
           ) : (
             <div className="glass-card p-12 text-center">
               <Activity className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="text-lg font-semibold mb-2 text-[color:var(--text-primary)]">
                 Select a Disease
               </h3>
-              <p className="text-dark-400 text-sm">
+              <p className="text-sm text-[color:var(--text-muted)]">
                 Choose a disease from the list or search to view detailed
                 surveillance data.
               </p>

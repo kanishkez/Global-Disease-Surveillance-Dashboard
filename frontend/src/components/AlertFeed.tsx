@@ -34,7 +34,7 @@ export default function AlertFeed({ outbreaks, maxItems = 10 }: AlertFeedProps) 
   if (items.length === 0) {
     return (
       <div className="glass-card p-6 text-center">
-        <p className="text-dark-400 text-sm">No active alerts</p>
+        <p className="text-sm text-[color:var(--text-muted)]">No active alerts</p>
       </div>
     );
   }
@@ -56,24 +56,24 @@ export default function AlertFeed({ outbreaks, maxItems = 10 }: AlertFeedProps) 
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <span className="font-semibold text-sm text-white">
+                  <span className="font-semibold text-sm text-[color:var(--text-primary)]">
                     {outbreak.disease_name}
                   </span>
                   <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${severity.bg} ${severity.color}`}>
                     {severity.label}
                   </span>
                 </div>
-                <p className="text-xs text-dark-400 mb-1.5 line-clamp-2">
+                <p className="text-xs mb-1.5 line-clamp-2 text-[color:var(--text-muted)]">
                   {outbreak.description || `Outbreak reported in ${outbreak.country_name || 'Unknown location'}`}
                 </p>
-                <div className="flex items-center gap-3 text-[11px] text-dark-500">
+                <div className="flex items-center gap-3 text-[11px] text-[color:var(--text-muted)]">
                   {outbreak.country_name && (
                     <span className="flex items-center gap-1">
                       📍 {outbreak.country_name}
                     </span>
                   )}
                   <span>{timeAgo(outbreak.report_date)}</span>
-                  <span className="text-dark-600">via {outbreak.source}</span>
+                  <span className="opacity-80">via {outbreak.source}</span>
                 </div>
                 {(outbreak.cases_count || outbreak.deaths_count) && (
                   <div className="flex items-center gap-3 mt-2 text-xs">

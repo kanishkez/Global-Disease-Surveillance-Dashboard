@@ -16,22 +16,18 @@ const variantStyles = {
   default: {
     iconBg: "bg-blue-500/10",
     iconColor: "text-blue-500",
-    border: "border-gray-800",
   },
   danger: {
     iconBg: "bg-red-500/10",
     iconColor: "text-red-500",
-    border: "border-gray-800",
   },
   success: {
     iconBg: "bg-emerald-500/10",
     iconColor: "text-emerald-500",
-    border: "border-gray-800",
   },
   warning: {
     iconBg: "bg-amber-500/10",
     iconColor: "text-amber-500",
-    border: "border-gray-800",
   },
 };
 
@@ -47,9 +43,7 @@ export default function StatsCard({
   const style = variantStyles[variant];
 
   return (
-    <div
-      className={`stat-card bg-gray-900 border ${style.border} hover:border-gray-700 transition-colors`}
-    >
+    <div className="stat-card transition-colors">
       <div className="flex items-start justify-between mb-3">
         <div
           className={`w-10 h-10 rounded-lg ${style.iconBg} flex items-center justify-center transition-transform duration-200`}
@@ -63,7 +57,7 @@ export default function StatsCard({
                 ? "text-red-400 bg-red-500/10"
                 : trend === "down"
                   ? "text-emerald-400 bg-emerald-500/10"
-                  : "text-gray-400 bg-gray-800"
+                  : "text-[color:var(--text-muted)] bg-black/5 dark:bg-white/5"
             }`}
           >
             {trend === "up" ? (
@@ -77,13 +71,15 @@ export default function StatsCard({
           </div>
         )}
       </div>
-      <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+      <p className="text-xs font-medium uppercase tracking-wider mb-1 text-[color:var(--text-muted)]">
         {title}
       </p>
-      <p className="text-2xl font-bold text-white tracking-tight">
+      <p className="text-2xl font-bold tracking-tight text-[color:var(--text-primary)]">
         {typeof value === "number" ? value.toLocaleString() : value}
       </p>
-      {subtitle && <p className="text-gray-500 text-xs mt-1">{subtitle}</p>}
+      {subtitle && (
+        <p className="text-xs mt-1 text-[color:var(--text-muted)]">{subtitle}</p>
+      )}
     </div>
   );
 }

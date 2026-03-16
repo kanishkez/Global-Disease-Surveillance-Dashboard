@@ -20,6 +20,17 @@
     --danger: #ef4444;
 }
 
+.light {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #eef2ff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --border-subtle: rgba(15, 23, 42, 0.12);
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -64,23 +75,27 @@ body {
 /* Card Styles */
 @layer components {
     .card {
-        @apply rounded-lg border bg-gray-900 border-gray-800;
+        @apply rounded-lg border;
+        background: var(--bg-card);
+        border-color: var(--border-subtle);
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
     }
 
     .card:hover {
-        @apply border-gray-700;
+        border-color: rgba(99, 102, 241, 0.25);
     }
 
     .glass-card {
-        @apply rounded-lg border bg-gray-900 border-gray-800;
+        @apply rounded-lg border;
+        background: var(--bg-card);
+        border-color: var(--border-subtle);
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
     }
 
     .glass-card:hover {
-        @apply border-gray-700;
+        border-color: rgba(99, 102, 241, 0.25);
     }
 
     .stat-card {
@@ -119,13 +134,22 @@ body {
     }
 
     .nav-link {
-        @apply px-4 py-2 rounded-lg text-gray-400 transition-all duration-150 text-sm font-medium;
+        @apply px-4 py-2 rounded-lg transition-all duration-150 text-sm font-medium;
+        /* Navbar uses a constant dark surface across themes. */
+        color: rgba(226, 232, 240, 0.75);
     }
     .nav-link:hover {
-        @apply text-white bg-gray-800;
+        color: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.06);
     }
     .nav-link-active {
-        @apply text-white bg-gray-800 border border-gray-700;
+        color: rgba(15, 23, 42, 0.98);
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+
+    .nav-link-active:hover {
+        background: rgba(255, 255, 255, 0.92);
     }
 
     .pulse-dot {
@@ -182,6 +206,22 @@ body {
 .leaflet-container {
     background: var(--bg-primary) !important;
     border-radius: 8px;
+    z-index: 0;
+}
+
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-marker-pane,
+.leaflet-shadow-pane,
+.leaflet-popup-pane {
+    z-index: 0;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 10;
 }
 
 .leaflet-tile-pane {

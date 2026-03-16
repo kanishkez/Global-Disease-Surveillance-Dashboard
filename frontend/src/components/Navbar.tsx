@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Activity } from "lucide-react";
 import SearchBar from "./SearchBar";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Dashboard", icon: "" },
@@ -18,7 +19,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-xl"
+      className="fixed top-0 left-0 right-0 z-[2000] border-b border-white/10 backdrop-blur-xl"
       style={{
         background: "rgba(10, 14, 26, 0.85)",
       }}
@@ -73,6 +74,8 @@ export default function Navbar() {
               <div className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse" />
               <span className="text-accent-400">Live</span>
             </div>
+
+            <ThemeToggle />
 
             {/* Mobile Menu Button */}
             <button

@@ -106,21 +106,30 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[color:var(--text-primary)] flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-blue-500" />
             ML Analytics
           </h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-sm mt-1 text-[color:var(--text-muted)]">
             AI-powered outbreak predictions and anomaly detection
           </p>
         </div>
         <select
           value={selectedDisease}
           onChange={(e) => setSelectedDisease(e.target.value)}
-          className="px-4 py-2 rounded-lg text-sm bg-gray-900 border border-gray-800 text-white outline-none focus:border-blue-600 transition-all cursor-pointer"
+          className="px-4 py-2 rounded-lg text-sm outline-none focus:border-blue-600 transition-all cursor-pointer border"
+          style={{
+            background: "var(--bg-card)",
+            borderColor: "var(--border-subtle)",
+            color: "var(--text-primary)",
+          }}
         >
           {diseases.map((d) => (
-            <option key={d.id} value={d.name} className="bg-gray-900">
+            <option
+              key={d.id}
+              value={d.name}
+              style={{ background: "var(--bg-card)", color: "var(--text-primary)" }}
+            >
               {d.name}
             </option>
           ))}
@@ -164,7 +173,7 @@ export default function AnalyticsPage() {
       {/* Prediction Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-[color:var(--text-primary)] mb-4 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-blue-500" />
             7-Day Forecast — {selectedDisease}
           </h3>
@@ -198,14 +207,14 @@ export default function AnalyticsPage() {
               height={300}
             />
           ) : (
-            <div className="flex items-center justify-center h-[300px] text-gray-400 text-sm">
+            <div className="flex items-center justify-center h-[300px] text-sm text-[color:var(--text-muted)]">
               No prediction data available
             </div>
           )}
         </div>
 
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-[color:var(--text-primary)] mb-4 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-blue-500" />
             Anomaly Scores
           </h3>
@@ -228,7 +237,7 @@ export default function AnalyticsPage() {
               height={300}
             />
           ) : (
-            <div className="flex items-center justify-center h-[300px] text-gray-400 text-sm">
+            <div className="flex items-center justify-center h-[300px] text-sm text-[color:var(--text-muted)]">
               No anomaly data available
             </div>
           )}
@@ -238,7 +247,7 @@ export default function AnalyticsPage() {
       {/* Historical Trend */}
       {sortedStats.length > 1 && (
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-[color:var(--text-primary)] mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-blue-500" />
             Historical Case Trend (Global)
           </h3>
@@ -269,7 +278,7 @@ export default function AnalyticsPage() {
       {/* Country Comparison */}
       {topCountries.length > 0 && (
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-[color:var(--text-primary)] mb-4 flex items-center gap-2">
             <Globe className="w-4 h-4 text-blue-500" />
             Country Comparison — {selectedDisease}
           </h3>
@@ -310,11 +319,11 @@ export default function AnalyticsPage() {
               >
                 <div className="pulse-dot bg-red-500" />
                 <div className="flex-1">
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm font-medium text-[color:var(--text-primary)]">
                     Spike detected on{" "}
                     {new Date(a.prediction_date).toLocaleDateString()}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-[color:var(--text-muted)]">
                     Predicted: {a.predicted_cases?.toLocaleString()} cases •
                     Score: {((a.anomaly_score || 0) * 100).toFixed(1)}%
                   </p>
@@ -327,37 +336,46 @@ export default function AnalyticsPage() {
 
       {/* Model Info */}
       <div className="glass-card p-5">
-        <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-[color:var(--text-primary)] mb-3 flex items-center gap-2">
           <Bot className="w-4 h-4 text-blue-500" />
           Model Architecture
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-gray-800 border border-gray-700">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          <div
+            className="p-4 rounded-lg border"
+            style={{ background: "var(--bg-card-hover)", borderColor: "var(--border-subtle)" }}
+          >
+            <h4 className="text-xs font-bold uppercase tracking-wider mb-2 text-[color:var(--text-muted)]">
               Trend Prediction
             </h4>
-            <p className="text-sm text-white font-medium">PyTorch LSTM</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-sm font-medium text-[color:var(--text-primary)]">PyTorch LSTM</p>
+            <p className="text-xs mt-1 text-[color:var(--text-muted)]">
               2-layer LSTM with dropout for 7-day case forecasting with
               confidence intervals
             </p>
           </div>
-          <div className="p-4 rounded-lg bg-gray-800 border border-gray-700">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          <div
+            className="p-4 rounded-lg border"
+            style={{ background: "var(--bg-card-hover)", borderColor: "var(--border-subtle)" }}
+          >
+            <h4 className="text-xs font-bold uppercase tracking-wider mb-2 text-[color:var(--text-muted)]">
               Report Classification
             </h4>
-            <p className="text-sm text-white font-medium">BART Zero-Shot</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-sm font-medium text-[color:var(--text-primary)]">BART Zero-Shot</p>
+            <p className="text-xs mt-1 text-[color:var(--text-muted)]">
               Classifies reports as confirmed/suspected/news using NLI-based
               zero-shot
             </p>
           </div>
-          <div className="p-4 rounded-lg bg-gray-800 border border-gray-700">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          <div
+            className="p-4 rounded-lg border"
+            style={{ background: "var(--bg-card-hover)", borderColor: "var(--border-subtle)" }}
+          >
+            <h4 className="text-xs font-bold uppercase tracking-wider mb-2 text-[color:var(--text-muted)]">
               Anomaly Detection
             </h4>
-            <p className="text-sm text-white font-medium">Isolation Forest</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-sm font-medium text-[color:var(--text-primary)]">Isolation Forest</p>
+            <p className="text-xs mt-1 text-[color:var(--text-muted)]">
               sklearn Isolation Forest with Z-score fallback for spike detection
             </p>
           </div>

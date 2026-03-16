@@ -83,10 +83,10 @@ export default function HomePage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary-500 animate-spin mx-auto mb-4" />
-          <h2 className="text-lg font-semibold text-white mb-1">
+          <h2 className="text-lg font-semibold mb-1 text-[color:var(--text-primary)]">
             Initializing Surveillance
           </h2>
-          <p className="text-gray-400 text-sm">
+          <p className="text-sm text-[color:var(--text-muted)]">
             Connecting to global health data sources...
           </p>
         </div>
@@ -99,15 +99,15 @@ export default function HomePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-[color:var(--text-primary)]">
             Global Surveillance Dashboard
           </h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-sm mt-1 text-[color:var(--text-muted)]">
             Real-time disease intelligence from {stats?.total_countries || 0}{" "}
             countries
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2 text-xs text-[color:var(--text-muted)]">
           <div className="pulse-dot" />
           <span>
             Updated{" "}
@@ -123,7 +123,7 @@ export default function HomePage() {
           <p className="text-red-400 text-sm flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" /> {error}
           </p>
-          <p className="text-gray-400 text-xs mt-1">
+          <p className="text-xs mt-1 text-[color:var(--text-muted)]">
             Run <code className="text-primary-400">docker compose up</code> to
             start all services.
           </p>
@@ -184,7 +184,7 @@ export default function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
               <Globe className="w-5 h-5 text-blue-500" /> Global Outbreak Map
             </h2>
             <div className="flex items-center gap-3 text-[10px]">
@@ -209,7 +209,7 @@ export default function HomePage() {
           />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2 text-[color:var(--text-primary)]">
             <AlertTriangle className="w-5 h-5 text-red-500" /> Live Alerts
           </h2>
           <div className="max-h-[420px] overflow-y-auto pr-1 space-y-2">
@@ -221,7 +221,7 @@ export default function HomePage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">
+          <h3 className="text-sm font-semibold mb-4 text-[color:var(--text-primary)]">
             Outbreaks by Source
           </h3>
           <TrendChart
@@ -238,7 +238,7 @@ export default function HomePage() {
           />
         </div>
         <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">
+          <h3 className="text-sm font-semibold mb-4 text-[color:var(--text-primary)]">
             Severity Distribution
           </h3>
           <TrendChart
@@ -256,7 +256,7 @@ export default function HomePage() {
 
       {/* Recent Events Timeline */}
       <div className="glass-card p-5">
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-sm font-semibold mb-4 flex items-center gap-2 text-[color:var(--text-primary)]">
           <Radio className="w-4 h-4 text-blue-500" /> Recent Surveillance Events
         </h3>
         {events.length > 0 ? (
@@ -264,23 +264,23 @@ export default function HomePage() {
             {events.slice(0, 15).map((event, idx) => (
               <div
                 key={event.id || idx}
-                className="flex gap-3 pb-3 border-b border-white/5 last:border-0 animate-slide-up"
+                className="flex gap-3 pb-3 border-b border-[color:var(--border-subtle)] last:border-0 animate-slide-up"
                 style={{ animationDelay: `${idx * 30}ms` }}
               >
                 <div className="flex flex-col items-center">
                   <div className="w-2 h-2 rounded-full bg-primary-500 mt-1.5" />
                   {idx < events.length - 1 && (
-                    <div className="w-px flex-1 bg-white/10 mt-1" />
+                    <div className="w-px flex-1 bg-[color:var(--border-subtle)] mt-1" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium line-clamp-1">
+                  <p className="text-sm font-medium line-clamp-1 text-[color:var(--text-primary)]">
                     {event.title}
                   </p>
-                  <p className="text-xs text-gray-400 line-clamp-1 mt-0.5">
+                  <p className="text-xs line-clamp-1 mt-0.5 text-[color:var(--text-muted)]">
                     {event.description}
                   </p>
-                  <div className="flex items-center gap-3 mt-1 text-[11px] text-gray-500">
+                  <div className="flex items-center gap-3 mt-1 text-[11px] text-[color:var(--text-muted)]">
                     <span>{event.source}</span>
                     {event.country_name && (
                       <span className="flex items-center gap-1">
@@ -296,7 +296,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-400 text-sm text-center py-8">
+          <p className="text-sm text-center py-8 text-[color:var(--text-muted)]">
             No recent events
           </p>
         )}

@@ -344,6 +344,9 @@ async def get_map_data(
     if cached:
         return cached
 
+    seen_countries: dict[str, MapDataPoint] = {}
+
+    # --- Source 1: Country table (populated by disease.sh) ---
     result = await db.execute(
         select(Country).where(
             and_(Country.latitude.isnot(None), Country.longitude.isnot(None))
@@ -351,9 +354,7 @@ async def get_map_data(
     )
     countries = result.scalars().all()
 
-    map_points = []
     for c in countries:
-        # Get latest stats
         stats = await db.execute(
             select(CaseStatistic).where(
                 CaseStatistic.country_name == c.name
@@ -361,7 +362,6 @@ async def get_map_data(
         )
         stat = stats.scalar_one_or_none()
 
-        # Get active outbreaks
         outbreaks = await db.execute(
             select(OutbreakReport).where(
                 and_(
@@ -371,10 +371,8 @@ async def get_map_data(
             )
         )
         active_outbreaks = outbreaks.scalars().all()
-
         diseases = list(set(o.disease_name for o in active_outbreaks))
 
-        # Determine severity
         severity = "low"
         if len(active_outbreaks) > 3:
             severity = "critical"
@@ -383,7 +381,7 @@ async def get_map_data(
         elif len(active_outbreaks) > 0:
             severity = "medium"
 
-        map_points.append(MapDataPoint(
+        seen_countries[c.name] = MapDataPoint(
             country_name=c.name,
             latitude=c.latitude,
             longitude=c.longitude,
@@ -392,8 +390,50 @@ async def get_map_data(
             active_outbreaks=len(active_outbreaks),
             severity=severity,
             diseases=diseases
-        ))
+        )
 
+    # --- Source 2: OutbreakReports with coordinates (fallback for missing Countries) ---
+    outbreak_result = await db.execute(
+        select(OutbreakReport).where(
+            and_(
+                OutbreakReport.is_active == True,
+                OutbreakReport.latitude.isnot(None),
+                OutbreakReport.longitude.isnot(None),
+            )
+        )
+    )
+    all_outbreaks = outbreak_result.scalars().all()
+
+    # Group outbreaks by country
+    outbreak_by_country: dict[str, list] = {}
+    for o in all_outbreaks:
+        name = o.country_name or "Unknown"
+        outbreak_by_country.setdefault(name, []).append(o)
+
+    for country_name, obs in outbreak_by_country.items():
+        if country_name in seen_countries:
+            continue  # Already covered by Country table
+        first = obs[0]
+        diseases = list(set(o.disease_name for o in obs))
+        total_cases = sum(o.cases_count or 0 for o in obs)
+        total_deaths = sum(o.deaths_count or 0 for o in obs)
+
+        # Use the highest severity from the outbreaks
+        sev_order = {"critical": 4, "high": 3, "medium": 2, "low": 1}
+        max_sev = max((o.severity.value if o.severity else "low" for o in obs), key=lambda s: sev_order.get(s, 0))
+
+        seen_countries[country_name] = MapDataPoint(
+            country_name=country_name,
+            latitude=first.latitude,
+            longitude=first.longitude,
+            total_cases=total_cases,
+            total_deaths=total_deaths,
+            active_outbreaks=len(obs),
+            severity=max_sev,
+            diseases=diseases
+        )
+
+    map_points = list(seen_countries.values())
     await cache.set("map_data", [p.model_dump() for p in map_points], ttl=300)
     return map_points
 

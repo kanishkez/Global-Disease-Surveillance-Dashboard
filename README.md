@@ -1,185 +1,165 @@
-# Global Disease Surveillance Dashboard — SENTINEL
+# SENTINEL — Global Disease Surveillance Dashboard
 
-A production-ready full-stack web application for real-time global disease surveillance, built for hackathon-grade rapid deployment.
+A full-stack application for monitoring global disease activity using data from multiple public health sources. The system aggregates outbreak reports, health indicators, and case statistics and presents them through an interactive dashboard.
 
-![Dashboard](https://img.shields.io/badge/status-production--ready-brightgreen) ![Python](https://img.shields.io/badge/python-3.11-blue) ![Next.js](https://img.shields.io/badge/next.js-14-black) ![Docker](https://img.shields.io/badge/docker-compose-2496ED)
-
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-# Clone and run
 git clone <repo-url>
 cd project
-
-# Launch all 6 services
 docker compose up --build
 ```
 
-Once running:
-- **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000)
-- **Backend API / Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **API Health Check**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+Services:
+
+| Service      | URL                                                                  |
+| ------------ | -------------------------------------------------------------------- |
+| Frontend     | [http://localhost:3000](http://localhost:3000)                       |
+| Backend API  | [http://localhost:8000](http://localhost:8000)                       |
+| Swagger Docs | [http://localhost:8000/docs](http://localhost:8000/docs)             |
+| Health Check | [http://localhost:8000/api/health](http://localhost:8000/api/health) |
 
 ---
 
-## 📐 Architecture
+## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                    Frontend (Next.js)                     │
-│         Dashboard · Maps · Charts · Analytics            │
-│                  http://localhost:3000                    │
-└────────────────────────┬─────────────────────────────────┘
-                         │ REST API
-┌────────────────────────▼─────────────────────────────────┐
-│                    Backend (FastAPI)                      │
-│         /api/search · /api/outbreaks · /api/predict      │
-│                  http://localhost:8000                    │
-├──────────────┬──────────────┬────────────────────────────┤
-│  PostgreSQL  │    Redis     │   Celery Workers           │
-│   (Data)     │   (Cache)    │   (Ingestion Pipeline)     │
-└──────────────┴──────────────┴────────────────────────────┘
+Frontend (Next.js)
+       |
+       | REST API
+       v
+Backend (FastAPI)
+       |
+-----------------------------
+| PostgreSQL | Redis | Celery |
+-----------------------------
 ```
 
-### Docker Services (6)
+### Services
 
-| Service     | Purpose                          | Port  |
-|-------------|----------------------------------|-------|
-| `postgres`  | Primary database                 | 5432  |
-| `redis`     | Cache + Celery broker            | 6379  |
-| `backend`   | FastAPI API server               | 8000  |
-| `frontend`  | Next.js dashboard                | 3000  |
-| `worker`    | Celery task workers              | —     |
-| `scheduler` | Celery Beat (hourly jobs)        | —     |
-
----
-
-## 📡 Data Sources
-
-| Source                | Type       | Frequency | Data                          |
-|-----------------------|------------|-----------|-------------------------------|
-| CDC Content Services  | REST API   | 1 hour    | Surveillance reports, topics  |
-| disease.sh            | REST API   | 1 hour    | COVID-19 global/country stats |
-| WHO GHO               | REST API   | 1 hour    | Health indicators, countries  |
-| ProMED Mail           | RSS Feed   | 1 hour    | Disease alerts, outbreaks     |
-| CDC FluView           | RSS Feed   | 1 hour    | Influenza surveillance        |
-| HealthMap             | Scraper    | 1 hour    | Outbreak alerts, disease news |
+| Service   | Purpose                  | Port |
+| --------- | ------------------------ | ---- |
+| postgres  | database                 | 5432 |
+| redis     | cache and message broker | 6379 |
+| backend   | FastAPI server           | 8000 |
+| frontend  | Next.js dashboard        | 3000 |
+| worker    | Celery background tasks  | —    |
+| scheduler | periodic ingestion jobs  | —    |
 
 ---
 
-## 🔌 API Endpoints
+## Data Sources
 
-| Endpoint                      | Description                    |
-|-------------------------------|--------------------------------|
-| `GET /api/health`             | Health check                   |
-| `GET /api/stats`              | Global statistics              |
-| `GET /api/search?q=flu`       | Search diseases/outbreaks      |
-| `GET /api/diseases`           | List tracked diseases          |
-| `GET /api/outbreaks`          | Active outbreak reports        |
-| `GET /api/countries`          | Country list                   |
-| `GET /api/country/{name}`     | Country detail + stats         |
-| `GET /api/case-stats`         | Case statistics time-series    |
-| `GET /api/predict/{disease}`  | ML trend predictions           |
-| `GET /api/map-data`           | Map visualization data         |
-| `GET /api/events`             | Surveillance events feed       |
+| Source               | Type    | Data                             |
+| -------------------- | ------- | -------------------------------- |
+| CDC Content Services | API     | public health topics and reports |
+| disease.sh           | API     | COVID-19 global statistics       |
+| WHO GHO              | API     | health indicators                |
+| ProMED               | RSS     | outbreak alerts                  |
+| CDC FluView          | RSS     | influenza surveillance           |
+| HealthMap            | scraper | outbreak reports                 |
+
+Data ingestion runs hourly through Celery workers.
 
 ---
 
-## 🤖 ML Models
+## API Endpoints
 
-### 1. Outbreak Trend Prediction (PyTorch LSTM)
-- 2-layer LSTM with dropout
-- Predicts 7-day case forecasts with confidence intervals
-- Statistical fallback when insufficient data
-
-### 2. Report Classification (BART Zero-Shot)
-- Classifies reports: `confirmed_outbreak`, `suspected_outbreak`, `news_mention`
-- Rule-based keyword fallback when model unavailable
-
-### 3. Anomaly Detection (Isolation Forest)
-- Detects sudden case spikes using sklearn
-- Z-score statistical fallback with rolling-window detection
-
----
-
-## 🖥️ Frontend Pages
-
-| Page        | Features                                    |
-|-------------|---------------------------------------------|
-| Dashboard   | Global map, stats cards, alert feed, charts |
-| Diseases    | Disease search, predictions, outbreak list  |
-| Countries   | Country stats, case trends, outbreak data   |
-| Analytics   | ML forecasts, anomaly detection, comparison |
+| Endpoint                 | Description                  |
+| ------------------------ | ---------------------------- |
+| `/api/health`            | service health check         |
+| `/api/stats`             | global statistics            |
+| `/api/search`            | search diseases or outbreaks |
+| `/api/diseases`          | tracked diseases             |
+| `/api/outbreaks`         | outbreak reports             |
+| `/api/countries`         | list of countries            |
+| `/api/country/{name}`    | country statistics           |
+| `/api/case-stats`        | time-series case data        |
+| `/api/predict/{disease}` | trend prediction             |
+| `/api/map-data`          | map visualization data       |
+| `/api/events`            | surveillance events feed     |
 
 ---
 
-## 🛠️ Tech Stack
+## Machine Learning Components
 
-**Backend**: Python 3.11 · FastAPI · SQLAlchemy · Celery · Redis · PostgreSQL
-**ML**: PyTorch · Transformers · scikit-learn · pandas · numpy
-**Frontend**: Next.js 14 · React 18 · TypeScript · Tailwind CSS · Chart.js · Leaflet · D3
-**Infra**: Docker · Docker Compose
+Trend Prediction
+LSTM model that forecasts short-term case trends.
 
----
+Report Classification
+Zero-shot classification used to categorize outbreak reports.
 
-## 📂 Project Structure
+Anomaly Detection
+Isolation Forest for detecting abnormal spikes in case counts.
 
-```
-project/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              # FastAPI entrypoint
-│   │   ├── config.py            # Settings (env vars)
-│   │   ├── database.py          # SQLAlchemy engine
-│   │   ├── models.py            # ORM models (6 tables)
-│   │   ├── schemas.py           # Pydantic schemas
-│   │   ├── worker.py            # Celery tasks
-│   │   ├── api/routes.py        # API endpoints
-│   │   ├── ingestion/           # 6 data ingestors
-│   │   └── ml/                  # 3 ML models
-│   ├── alembic/                 # DB migrations
-│   ├── requirements.txt
-│   └── Dockerfile
-├── frontend/
-│   ├── src/
-│   │   ├── app/                 # Next.js pages
-│   │   ├── components/          # React components
-│   │   └── lib/api.ts           # API client
-│   ├── package.json
-│   └── Dockerfile
-├── docker-compose.yml
-└── README.md
-```
+Fallback statistical methods are used when models cannot run.
 
 ---
 
-## 🔧 Development
+## Frontend
+
+Pages include:
+
+* Dashboard with global statistics and map visualization
+* Disease explorer with outbreak reports and predictions
+* Country statistics and trend charts
+* Analytics for anomaly detection and forecasting
+
+Built with Next.js, React, TypeScript, Tailwind, and Chart.js.
+
+---
+
+## Tech Stack
+
+Backend
+Python · FastAPI · SQLAlchemy · Celery · Redis · PostgreSQL
+
+Machine Learning
+PyTorch · Transformers · scikit-learn · pandas
+
+Frontend
+Next.js · React · TypeScript · Tailwind CSS
+
+Infrastructure
+Docker · Docker Compose
+
+---
+
+## Development
+
+Backend
 
 ```bash
-# Backend only
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
 
-# Frontend only
+Frontend
+
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-# Run Celery worker
+Celery
+
+```bash
 celery -A app.worker worker --loglevel=info
-
-# Run Celery beat (scheduler)
 celery -A app.worker beat --loglevel=info
+```
 
-# Trigger initial data ingestion
+Run ingestion manually:
+
+```bash
 python -c "from app.worker import run_all_ingestion; run_all_ingestion()"
 ```
 
 ---
 
-## 📄 License
+## License
 
 MIT
+
+

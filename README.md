@@ -21,6 +21,12 @@ Services:
 
 ---
 
+### Demo Video
+
+- [Watch the demo](https://youtu.be/GSun6RqP2nw)
+
+---
+
 ## Architecture
 
 ```

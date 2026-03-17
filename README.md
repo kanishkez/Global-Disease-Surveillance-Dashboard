@@ -29,17 +29,7 @@ Services:
 
 ## Architecture
 
-```
-Frontend (Next.js)
-       |
-       | REST API
-       v
-Backend (FastAPI)
-       |
------------------------------
-| PostgreSQL | Redis | Celery |
------------------------------
-```
+![Full-stack disease surveillance architecture](docs/architecture.png)
 
 ### Services
 

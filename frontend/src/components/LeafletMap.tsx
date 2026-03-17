@@ -34,8 +34,13 @@ export default function LeafletMap({ data, height = '500px', onCountryClick }: L
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
         {data.map((point, idx) => {
-          const color = severityColors[point.severity || 'low'] || '#22c55e';
-          const radius = Math.max(5, Math.min(25, Math.log10(point.total_cases + 1) * 3));
+          const color = severityColors[point.severity || 'low'] || '#3b82f6';
+          
+          // Better scaling algorithm to make blobs more visible
+          // Base size 8, scales up more aggressively based on cases and outbreaks
+          const caseFactor = Math.log10(point.total_cases > 0 ? point.total_cases : 1) * 5;
+          const outbreakFactor = (point.active_outbreaks || 0) * 4;
+          const radius = Math.max(10, Math.min(45, caseFactor + outbreakFactor));
 
           return (
             <CircleMarker
@@ -43,11 +48,11 @@ export default function LeafletMap({ data, height = '500px', onCountryClick }: L
               center={[point.latitude, point.longitude]}
               radius={radius}
               pathOptions={{
-                color: color,
+                color: '#ffffff', // White border to make it pop on dark map
                 fillColor: color,
-                fillOpacity: 0.6,
-                weight: 2,
-                opacity: 1,
+                fillOpacity: 0.75, // Higher opacity for better visibility
+                weight: 1.5,
+                opacity: 0.9,
               }}
               eventHandlers={{
                 click: () => onCountryClick?.(point.country_name),

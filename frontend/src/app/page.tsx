@@ -23,6 +23,7 @@ import StatsCard from "@/components/StatsCard";
 import AlertFeed from "@/components/AlertFeed";
 import OutbreakMap from "@/components/OutbreakMap";
 import TrendChart from "@/components/TrendChart";
+import DiseaseAgent from "@/components/DiseaseAgent";
 
 export default function HomePage() {
   const router = useRouter();
@@ -253,6 +254,9 @@ export default function HomePage() {
           />
         </div>
       </div>
+
+      {/* AI Disease Research Agent */}
+      <DiseaseAgent />
 
       {/* Recent Events Timeline */}
       <div className="glass-card p-5">

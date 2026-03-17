@@ -455,3 +455,50 @@ async def list_events(
     query = query.offset(skip).limit(limit)
     result = await db.execute(query)
     return [SurveillanceEventResponse.model_validate(e) for e in result.scalars().all()]
+
+
+# --- AI Agent ---
+@router.post("/agent/query")
+async def agent_query(
+    query: str = Query(..., description="Your question about a disease, drug, or outbreak"),
+    disease_name: Optional[str] = Query(None, description="Optional specific disease name"),
+    country: Optional[str] = Query(None, description="Optional country or region"),
+    redis=Depends(get_redis),
+):
+    """AI-powered disease intelligence agent.
+
+    Uses LangGraph with web search and local database lookups to provide
+    comprehensive, structured information about diseases, treatments, and drugs.
+    """
+    from app.agent.graph import run_agent_query
+    from app.config import get_settings
+
+    settings = get_settings()
+    if not settings.GOOGLE_API_KEY or not settings.TAVILY_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI agent not configured. Set GOOGLE_API_KEY and TAVILY_API_KEY.",
+        )
+
+    # Check cache
+    cache = CacheService(redis)
+    cache_key = f"agent:{query}:{disease_name}:{country}"
+    cached = await cache.get(cache_key)
+    if cached:
+        return cached
+
+    try:
+        response = await run_agent_query(
+            query=query,
+            disease_name=disease_name,
+            country=country,
+        )
+        result = response.model_dump()
+        # Convert datetime for JSON serialization
+        result["timestamp"] = result["timestamp"].isoformat() if result.get("timestamp") else None
+        await cache.set(cache_key, result, ttl=600)
+        return result
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Agent query failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Agent query failed: {str(e)}")

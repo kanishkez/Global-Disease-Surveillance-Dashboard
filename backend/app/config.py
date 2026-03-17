@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     FLUVIEW_RSS: str = "https://www.cdc.gov/flu/weekly/rss.xml"
     HEALTHMAP_BASE: str = "https://healthmap.org"
 
+    # AI Agent
+    GOOGLE_API_KEY: str = ""
+    TAVILY_API_KEY: str = ""
+    AGENT_MODEL: str = "gemini-2.0-flash"
+
     class Config:
         env_file = ".env"
 

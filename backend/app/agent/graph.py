@@ -5,7 +5,7 @@ import logging
 import time
 from typing import Optional
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import create_react_agent
 
@@ -72,9 +72,9 @@ IMPORTANT:
 
 def _build_agent():
     """Build the LangGraph ReAct agent."""
-    llm = ChatGoogleGenerativeAI(
+    llm = ChatGroq(
         model=settings.AGENT_MODEL,
-        google_api_key=settings.GOOGLE_API_KEY,
+        groq_api_key=settings.GROQ_API_KEY,
         temperature=0.1,
     )
 

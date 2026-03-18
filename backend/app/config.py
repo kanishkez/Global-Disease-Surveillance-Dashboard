@@ -28,7 +28,8 @@ class Settings(BaseSettings):
     # AI Agent
     GOOGLE_API_KEY: str = ""
     TAVILY_API_KEY: str = ""
-    AGENT_MODEL: str = "gemini-2.0-flash"
+    GROQ_API_KEY: str = ""
+    AGENT_MODEL: str = "llama-3.1-8b-instant"
 
     class Config:
         env_file = ".env"

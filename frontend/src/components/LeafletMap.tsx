@@ -30,17 +30,16 @@ export default function LeafletMap({ data, height = '500px', onCountryClick }: L
         maxZoom={8}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         {data.map((point, idx) => {
           const color = severityColors[point.severity || 'low'] || '#3b82f6';
           
-          // Better scaling algorithm to make blobs more visible
-          // Base size 8, scales up more aggressively based on cases and outbreaks
-          const caseFactor = Math.log10(point.total_cases > 0 ? point.total_cases : 1) * 5;
-          const outbreakFactor = (point.active_outbreaks || 0) * 4;
-          const radius = Math.max(10, Math.min(45, caseFactor + outbreakFactor));
+          // Scale down the markers to be dots instead of big circles
+          const caseFactor = Math.log10(point.total_cases > 0 ? point.total_cases : 1) * 2;
+          const outbreakFactor = (point.active_outbreaks || 0) * 1.5;
+          const radius = Math.max(4, Math.min(12, caseFactor + outbreakFactor));
 
           return (
             <CircleMarker
@@ -48,11 +47,11 @@ export default function LeafletMap({ data, height = '500px', onCountryClick }: L
               center={[point.latitude, point.longitude]}
               radius={radius}
               pathOptions={{
-                color: '#ffffff', // White border to make it pop on dark map
+                color: '#1e293b', // Darker border for light map
                 fillColor: color,
-                fillOpacity: 0.75, // Higher opacity for better visibility
+                fillOpacity: 0.85, 
                 weight: 1.5,
-                opacity: 0.9,
+                opacity: 0.8,
               }}
               eventHandlers={{
                 click: () => onCountryClick?.(point.country_name),
